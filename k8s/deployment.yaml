@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: taskboard}
+  template:
+    metadata:
+      labels: {app: taskboard}
+    spec:
+      containers:
+            - name: taskboard
+        image: taskboard:1.0
+        ports:
+                - containerPort: 8080
