@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  tools { maven 'maven3'; jdk 'jdk21' }
+  stages { 
   environment { IMAGE = 'taskboard:1.0' }
   stages {
     stage('Checkout') { steps { checkout scm } }
