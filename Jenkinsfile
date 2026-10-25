@@ -1,7 +1,9 @@
 pipeline {
   agent any
+
   environment {
-    IMAGE = 'taskboard:1.0'
+    JAVA_HOME = '/opt/jdk21'
+    PATH = '/opt/jdk21/bin:/usr/share/maven/bin:$PATH'
   }
   stages {
     stage('Checkout') {
