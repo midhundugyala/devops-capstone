@@ -8,10 +8,10 @@ pipeline {
       steps { checkout scm }
     }
     stage('Build') {
-      steps { sh './mvn clean package -DskipTests=false' }
+      steps { sh 'mvn clean package -DskipTests=false' }
     }
     stage('Test') {
-      steps { sh './mvn test' }
+      steps { sh 'mvn test' }
     }
     stage('Docker Build') {
       steps { sh 'docker build -t taskboard:1.0 .' }
