@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         JAVA_HOME = '/opt/jdk21'
-        PATH+EXTRA = '/opt/jdk21/bin:/usr/share/maven/bin'
+        PATH = "/opt/jdk21/bin:/usr/share/maven/bin:$PATH"
         IMAGE = 'mithun2011dmk/taskboard:latest'
     }
     stages {
