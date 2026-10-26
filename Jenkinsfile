@@ -1,28 +1,28 @@
 pipeline {
-  agent any
-
-  environment {
-    JAVA_HOME = '/opt/jdk21'
-    PATH = '/opt/jdk21/bin:/usr/share/maven/bin:$PATH'
-  }
-  stages {
-    stage('Checkout') {
-      steps { checkout scm }
+    agent any
+    environment {
+        JAVA_HOME = '/opt/jdk21'
+        PATH+EXTRA = '/opt/jdk21/bin:/usr/share/maven/bin'
+        IMAGE = 'mithun2011dmk/taskboard:latest'
     }
-    stage('Build') {
-      steps { sh 'mvn clean package -DskipTests=false' }
+    stages {
+        stage('Checkout') { steps { checkout scm } }
+        stage('Build') { steps { sh 'mvn clean package -DskipTests=false' } }
+        stage('Docker Build') { steps { sh 'docker build -t $IMAGE .' } }
+        stage('Docker Push') {
+            steps {
+                withCredentials([string(credentialsId: 'dockerhub-token', variable: 'TOKEN')]) {
+                    sh 'echo $TOKEN | docker login -u mithun2011dmk --password-stdin'
+                    sh 'docker push $IMAGE'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker rm -f taskboard || true'
+                sh 'docker run -d --name taskboard -p 8081:8080 $IMAGE'
+            }
+        }
     }
-    stage('Test') {
-      steps { sh 'mvn test' }
-    }
-    stage('Docker Build') {
-      steps { sh 'docker build -t taskboard:1.0 .' }
-    }
-    stage('Deploy') {
-      steps { sh 'docker rm -f taskboard || true; docker run -d --name taskboard -p 8081:8080 taskboard:1.0' }
-    }
-  }
-  post {
-    always { echo 'Pipeline Done' }
-  }
+    post { always { echo 'Pipeline Done' } }
 }
